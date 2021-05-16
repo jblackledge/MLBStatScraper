@@ -1,1 +1,1 @@
-# MLBWebScraper
+# MLBStatScraper
