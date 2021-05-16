@@ -3,11 +3,11 @@ from bs4 import BeautifulSoup as soup
 from urllib.request import Request, urlopen
 
 
-def getOPSLeaders(league, statType):
+def getOPSLeaders(league, statType, year):
 	statDictionary = {"ops" : "17", "avg" : "14", "hr" : "8", "rbi" : "9"}
 	#urls to parse, use request with "User-Agent" header to prevent MLB from blocking bot
 	if statType == "ops":
-		url = "https://www.mlb.com/stats/" + league + "-league"
+		url = "https://www.mlb.com/stats/" + league + "-league/" + year
 	elif statType == "rbi":
 		url = "https://www.mlb.com/stats/" + league + "-league"
 	request = Request(url, headers={"User-Agent": "XYZ/3.0"})
@@ -107,5 +107,5 @@ def getRBILeaders(league, statType):
 
 
 #getRBILeaders("national", "rbi")
-getOPSLeaders("national", "rbi")
+getOPSLeaders("national", "ops", "1922")
 
