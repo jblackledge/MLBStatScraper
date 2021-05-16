@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup as soup
 from urllib.request import Request, urlopen
 
 
-def getOPSLeaders(league):
+def getOPSLeaders(league, statType):
+	statDictionary = {"OPS" : "17", "AVG" : "14", "HR" : "8", "RBI" : "9"}
 	#urls to parse, use request with "User-Agent" header to prevent MLB from blocking bot
 	urlOPS = "https://www.mlb.com/stats/" + league + "-league"
 	request = Request(urlOPS, headers={"User-Agent": "XYZ/3.0"})
@@ -20,7 +21,7 @@ def getOPSLeaders(league):
 	playerNames = opsSoup.find_all("span", {"class": "full-3fV3c9pF"})
 
 	#find column specific stat
-	stats = opsSoup.select("td[data-col=\"17\"]")
+	stats = opsSoup.select("td[data-col=\"" + statDictionary[statType]  + "\"]")
 
 
 	#loop through list of player name by 2, and parse the html to retrieve a str object for first and last name
@@ -55,4 +56,4 @@ def getOPSLeaders(league):
 		statIndex += 1
 
 
-getOPSLeaders("american")
+getOPSLeaders("national", "OPS")
