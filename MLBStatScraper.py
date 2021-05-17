@@ -4,13 +4,10 @@ from urllib.request import Request, urlopen
 import datetime
 
 
-def getOPSLeaders(league, statType, year):
+def getOPSLeaders(league, year):
 	statDictionary = {"ops" : "17", "avg" : "14", "hr" : "8", "rbi" : "9"}
 	#urls to parse, use request with "User-Agent" header to prevent MLB from blocking bot
-	if statType == "ops":
-		url = "https://www.mlb.com/stats/" + league + "-league/" + year
-	elif statType == "rbi":
-		url = "https://www.mlb.com/stats/" + league + "-league"
+	url = "https://www.mlb.com/stats/" + league + "-league/" + year
 	request = Request(url, headers={"User-Agent": "XYZ/3.0"})
 
 	#download webpage, read contents, and close reader
@@ -25,7 +22,7 @@ def getOPSLeaders(league, statType, year):
 	playerNames = opsSoup.find_all("span", {"class": "full-3fV3c9pF"})
 
 	#find column specific stat
-	stats = opsSoup.select("td[data-col=\"" + statDictionary[statType]  + "\"]")
+	stats = opsSoup.select("td[data-col=\"17\"]")
 
 
 	#loop through list of player name by 2, and parse the html to retrieve a str object for first and last name
@@ -47,41 +44,20 @@ def getOPSLeaders(league, statType, year):
 
 		#get the desired stat
 		desiredStatLine = str(stats[statIndex])
-		if statType == "ops":
-			statStartingIndex = 205
-			#increment the statStartingIndex if the character at that pos is not a number or a decimal
-			while (desiredStatLine[statStartingIndex] != '.') and (not desiredStatLine[statStartingIndex].isdigit()):
-				statStartingIndex += 1
-		elif statType == "rbi":
-			statStartingIndex = 185
-			while not desiredStatLine[statStartingIndex].isdigit():
-				statStartingIndex += 1
-		elif statType == "hr":
-			statStartingIndex = 180
-		elif statType == "avg":
-			statStartingIndex = 180
-		else:
-			print("Stat not supported")
-			break
 
+		statStartingIndex = 205
+		#increment the statStartingIndex if the character at that pos is not a number or a decimal
+		while (desiredStatLine[statStartingIndex] != '.') and (not desiredStatLine[statStartingIndex].isdigit()):
+			statStartingIndex += 1
 
-		if statType == "ops":
-			stat = float(desiredStatLine[statStartingIndex : statEndingIndex])
-			print("%d,%s %s,%.3f" % (rank, firstName, lastName, stat))
-		elif statType == "rbi":
-			stat = int(desiredStatLine[statStartingIndex : -5])
-			print("%d,%s %s,%d" % (rank, firstName, lastName, stat))
+		stat = float(desiredStatLine[statStartingIndex : statEndingIndex])
+		print("%d,%s %s,%.3f" % (rank, firstName, lastName, stat))
 
 		rank += 1
 		statIndex += 1
 
 
-
-
-
 def getRBILeaders(league, year):
-	#dictionary of the stat's column position
-	statDictionary = {"ops" : "17", "avg" : "14", "hr" : "8", "rbi" : "9"}
 	#urls to parse, use request with "User-Agent" header to prevent MLB from blocking bot
 	now = datetime.datetime.now()
 	currentYear = int(now.year)
@@ -137,6 +113,4 @@ def getRBILeaders(league, year):
 		statIndex += 1
 
 
-#getRBILeaders("national", "rbi")
-getRBILeaders("national", "2019")
-
+getOPSLeaders("american", "2016")
