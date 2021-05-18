@@ -119,20 +119,28 @@ def getLeadersInteger(league, statType, year):
 
 		#get the desired stat line
 		desiredStatLine = str(stats[statIndex])
-		statEndingIndex = len(desiredStatLine) - 1
+
+###########################################################
+
+		#statEndingIndex = len(desiredStatLine) - 1
 
 		#loop through the stat line and decrement the ending index of the stat until we find a number
-		while not desiredStatLine[statEndingIndex - 1].isdigit():
-			statEndingIndex -= 1
+		#while not desiredStatLine[statEndingIndex - 1].isdigit():
+			#statEndingIndex -= 1
 
 
-		desiredStatLine = desiredStatLine[0 : statEndingIndex]
-		statStartingIndex = len(desiredStatLine) - 1
+		#desiredStatLine = desiredStatLine[0 : statEndingIndex]
+		#statStartingIndex = len(desiredStatLine) - 1
 
-		while desiredStatLine[statStartingIndex].isdigit() and desiredStatLine[statStartingIndex - 1].isdigit():
-			statStartingIndex -= 1
+		#while desiredStatLine[statStartingIndex].isdigit() and desiredStatLine[statStartingIndex - 1].isdigit():
+			#statStartingIndex -= 1
 
-		stat = int(desiredStatLine[statStartingIndex : ])
+		statIndecesTuple = calculateStatIndecesInteger(desiredStatLine)
+		statEndingIndex = statIndecesTuple[0]
+		statStartingIndex = statIndecesTuple[1]
+		stat = int(desiredStatLine[statStartingIndex : statEndingIndex])
+
+		#stat = int(desiredStatLine[statStartingIndex : ])
 		#print(desiredStatLine[statStartingIndex : ])
 		print("%d,%s %s,%d" % (rank, firstName, lastName, stat))
 
@@ -140,5 +148,22 @@ def getLeadersInteger(league, statType, year):
 		statIndex += 1
 
 
-#getLeadersInteger("american", "hr" ,"2016")
-getLeadersDecimal("american", "avg", "2016")
+def calculateStatIndecesInteger(statLine):
+	statEndingIndex = len(statLine) - 1
+
+	#loop through the stat line and decrement the ending index of the stat until we find a number
+	while not statLine[statEndingIndex - 1].isdigit():
+		statEndingIndex -= 1
+
+	#since statEndingIndex is the first char before the number starts, we want the startingIndex to be the
+	#first digit (from the end) of the stat
+	statStartingIndex = statEndingIndex - 1
+
+	while statLine[statStartingIndex].isdigit() and statLine[statStartingIndex - 1].isdigit():
+		statStartingIndex -= 1
+
+	return (statEndingIndex, statStartingIndex)
+
+
+getLeadersInteger("american", "rbi" ,"2016")
+#getLeadersDecimal("american", "avg", "2016")
