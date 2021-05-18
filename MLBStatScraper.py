@@ -4,9 +4,9 @@ from urllib.request import Request, urlopen
 import datetime
 
 
-def getLeadersDecimal(league, statType, year):
-	statTypeDict = {"ops" : "", "avg" : "batting-average"}
-	statColumnDict = {"ops" : "17", "avg" : "14"}
+def getLeaders(league, statType, year):
+	statTypeDict = {"ops" : "", "avg" : "batting-average", "hr" : "home-runs", "rbi" : "rbi"}
+	statColumnDict = {"ops" : "17", "avg" : "14", "rbi" : "9", "hr" : "8"}
 	#urls to parse, use request with "User-Agent" header to prevent MLB from blocking bot
 	now = datetime.datetime.now()
 	currentYear = int(now.year)
@@ -36,7 +36,6 @@ def getLeadersDecimal(league, statType, year):
 	statIndex = 0; #needed to access stat line
 	nameStartingIndex = 28
 	nameEndingIndex = -7
-	#statEndingIndex = -5
 
 	for i in range(0, len(playerNames), 2):
 		#get first and last name of current player as string
@@ -54,65 +53,12 @@ def getLeadersDecimal(league, statType, year):
 		statEndingIndex = statIndecesTuple[0]
 		statStartingIndex = statIndecesTuple[1]
 
-		stat = float(statLine[statStartingIndex : statEndingIndex])
-		print("%d,%s %s,%.3f" % (rank, firstName, lastName, stat))
-
-		rank += 1
-		statIndex += 1
-
-
-def getLeadersInteger(league, statType, year):
-	statTypeDict = {"hr" : "home-runs", "rbi" : "rbi"}
-	statColumnDict = {"hr" : "8", "rbi" : "9"}
-
-	#urls to parse, use request with "User-Agent" header to prevent MLB from blocking bot
-	now = datetime.datetime.now()
-	currentYear = int(now.year)
-	if year == currentYear:
-		url = "https://www.mlb.com/stats/" + league + "-league/" + statTypeDict[statType]
-	else:
-		url = "https://www.mlb.com/stats/" + league + "-league/" + statTypeDict[statType] + "/" + year
-	request = Request(url, headers={"User-Agent": "XYZ/3.0"})
-
-	#download webpage, read contents, and close reader
-	downloadedOPSPage = urlopen(request)
-	opsPageHtml = downloadedOPSPage.read()
-	downloadedOPSPage.close()
-
-	#create Beautiful Soup object to parse html page contents
-	rbiSoup = soup(opsPageHtml, "html.parser")
-
-	#find place in HTML containing player names in the table (ordered based on selected attribute)
-	playerNames = rbiSoup.find_all("span", {"class": "full-3fV3c9pF"})
-
-	#find column specific stat
-	stats = rbiSoup.select("td[data-col=\"" + statColumnDict[statType] + "\"]")
-
-
-	#loop through list of player name by 2, and parse the html to retrieve a str object for first and last name
-	rank = 1;
-	statIndex = 0;
-	nameStartingIndex = 28
-	nameEndingIndex = -7
-
-	for i in range(0, len(playerNames), 2):
-		#get first and last name of current player as string
-		firstNameLine = str(playerNames[i])
-		lastNameLine = str(playerNames[i + 1])
-
-		#parse string, leaving only the name
-		firstName = str(firstNameLine[nameStartingIndex : nameEndingIndex])
-		lastName = str(lastNameLine[nameStartingIndex : nameEndingIndex])
-
-		#get the desired stat line
-		statLine = str(stats[statIndex])
-
-		statIndecesTuple = calculateStatIndeces(statLine)
-		statEndingIndex = statIndecesTuple[0]
-		statStartingIndex = statIndecesTuple[1]
-		stat = int(statLine[statStartingIndex : statEndingIndex])
-
-		print("%d,%s %s,%d" % (rank, firstName, lastName, stat))
+		if statType != "ops" or statType != "avg":
+			stat = int(statLine[statStartingIndex : statEndingIndex])
+			print("%d,%s %s,%d" % (rank, firstName, lastName, stat))
+		else:
+			stat = float(statLine[statStartingIndex : statEndingIndex])
+			print("%d,%s %s,%.3f" % (rank, firstName, lastName, stat))
 
 		rank += 1
 		statIndex += 1
@@ -133,4 +79,4 @@ def calculateStatIndeces(statLine):
 
 
 #getLeadersInteger("american", "hr" ,"2016")
-getLeadersDecimal("american", "ops", "2016")
+getLeaders("american", "rbi", "2016")
