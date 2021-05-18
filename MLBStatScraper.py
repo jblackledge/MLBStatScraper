@@ -98,15 +98,13 @@ def getLeadersInteger(league, statType, year):
 
 	#find column specific stat
 	stats = rbiSoup.select("td[data-col=\"" + statColumnDict[statType] + "\"]")
-	#stats = rbiSoup.select("td[data-col=\"9\"]")
 
 
 	#loop through list of player name by 2, and parse the html to retrieve a str object for first and last name
 	rank = 1;
-	statIndex = 0; #needed to access stat line
+	statIndex = 0;
 	nameStartingIndex = 28
 	nameEndingIndex = -7
-	#statEndingIndex = -5
 
 	for i in range(0, len(playerNames), 2):
 		#get first and last name of current player as string
@@ -118,30 +116,13 @@ def getLeadersInteger(league, statType, year):
 		lastName = str(lastNameLine[nameStartingIndex : nameEndingIndex])
 
 		#get the desired stat line
-		desiredStatLine = str(stats[statIndex])
+		statLine = str(stats[statIndex])
 
-###########################################################
-
-		#statEndingIndex = len(desiredStatLine) - 1
-
-		#loop through the stat line and decrement the ending index of the stat until we find a number
-		#while not desiredStatLine[statEndingIndex - 1].isdigit():
-			#statEndingIndex -= 1
-
-
-		#desiredStatLine = desiredStatLine[0 : statEndingIndex]
-		#statStartingIndex = len(desiredStatLine) - 1
-
-		#while desiredStatLine[statStartingIndex].isdigit() and desiredStatLine[statStartingIndex - 1].isdigit():
-			#statStartingIndex -= 1
-
-		statIndecesTuple = calculateStatIndecesInteger(desiredStatLine)
+		statIndecesTuple = calculateStatIndecesInteger(statLine)
 		statEndingIndex = statIndecesTuple[0]
 		statStartingIndex = statIndecesTuple[1]
-		stat = int(desiredStatLine[statStartingIndex : statEndingIndex])
+		stat = int(statLine[statStartingIndex : statEndingIndex])
 
-		#stat = int(desiredStatLine[statStartingIndex : ])
-		#print(desiredStatLine[statStartingIndex : ])
 		print("%d,%s %s,%d" % (rank, firstName, lastName, stat))
 
 		rank += 1
