@@ -62,9 +62,11 @@ def getRBILeaders(league, year):
 	now = datetime.datetime.now()
 	currentYear = int(now.year)
 	if year == currentYear:
-		url = "https://www.mlb.com/stats/" + league + "-league/rbi"
+		url = "https://www.mlb.com/stats/" + league + "-league/home-runs"
+		#url = "https://www.mlb.com/stats/" + league + "-league/rbi"
 	else:
-		url = "https://www.mlb.com/stats/" + league + "-league/rbi/" + year
+		url = "https://www.mlb.com/stats/" + league + "-league/home-runs/" + year
+		#url = "https://www.mlb.com/stats/" + league + "-league/rbi/" + year
 	request = Request(url, headers={"User-Agent": "XYZ/3.0"})
 
 	#download webpage, read contents, and close reader
@@ -79,7 +81,8 @@ def getRBILeaders(league, year):
 	playerNames = rbiSoup.find_all("span", {"class": "full-3fV3c9pF"})
 
 	#find column specific stat
-	stats = rbiSoup.select("td[data-col=\"9\"]")
+	stats = rbiSoup.select("td[data-col=\"8\"]")
+	#stats = rbiSoup.select("td[data-col=\"9\"]")
 
 
 	#loop through list of player name by 2, and parse the html to retrieve a str object for first and last name
@@ -87,7 +90,7 @@ def getRBILeaders(league, year):
 	statIndex = 0; #needed to access stat line
 	nameStartingIndex = 28
 	nameEndingIndex = -7
-	statEndingIndex = -5
+	#statEndingIndex = -5
 
 	for i in range(0, len(playerNames), 2):
 		#get first and last name of current player as string
@@ -100,17 +103,25 @@ def getRBILeaders(league, year):
 
 		#get the desired stat line
 		desiredStatLine = str(stats[statIndex])
-		desiredStatLine = desiredStatLine[0 : -5]
-		index = len(desiredStatLine) - 1
+		statEndingIndex = len(desiredStatLine) - 1
 
-		while desiredStatLine[index].isdigit() and desiredStatLine[index - 1].isdigit():
-			index -= 1
+		#loop through the stat line and decrement the ending index of the stat until we find a number
+		while not desiredStatLine[statEndingIndex - 1].isdigit():
+			statEndingIndex -= 1
 
-		stat = int(desiredStatLine[index : ])
+
+		desiredStatLine = desiredStatLine[0 : statEndingIndex]
+		statStartingIndex = len(desiredStatLine) - 1
+
+		while desiredStatLine[statStartingIndex].isdigit() and desiredStatLine[statStartingIndex - 1].isdigit():
+			statStartingIndex -= 1
+
+		stat = int(desiredStatLine[statStartingIndex : ])
+		#print(desiredStatLine[statStartingIndex : ])
 		print("%d,%s %s,%d" % (rank, firstName, lastName, stat))
 
 		rank += 1
 		statIndex += 1
 
 
-getOPSLeaders("american", "2016")
+getRBILeaders("american", "2016")
