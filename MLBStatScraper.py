@@ -5,15 +5,9 @@ import datetime
 
 
 def getLeaders(league, statType, year):
-	statTypeDict = {"ops" : "", "avg" : "batting-average", "hr" : "home-runs", "rbi" : "rbi"}
 	statColumnDict = {"ops" : "17", "avg" : "14", "rbi" : "9", "hr" : "8"}
 	#urls to parse, use request with "User-Agent" header to prevent MLB from blocking bot
-	now = datetime.datetime.now()
-	currentYear = int(now.year)
-	if year == currentYear:
-		url = "https://www.mlb.com/stats/" + league + "-league/" + statTypeDict[statType]
-	else:
-		url = "https://www.mlb.com/stats/" + league + "-league/" + statTypeDict[statType] + "/" + year
+	url = getURL(league, statType, year)
 	request = Request(url, headers={"User-Agent": "XYZ/3.0"})
 
 	#download webpage, read contents, and close reader
@@ -78,5 +72,17 @@ def calculateStatIndeces(statLine):
 	return (statEndingIndex, statStartingIndex)
 
 
-#getLeadersInteger("american", "hr" ,"2016")
+def getURL(league, statType, year):
+	statTypeDict = {"ops" : "", "avg" : "batting-average", "hr" : "home-runs", "rbi" : "rbi"}
+
+	now = datetime.datetime.now()
+	currentYear = int(now.year)
+	if year == currentYear:
+		url = "https://www.mlb.com/stats/" + league + "-league/" + statTypeDict[statType]
+	else:
+		url = "https://www.mlb.com/stats/" + league + "-league/" + statTypeDict[statType] + "/" + year
+
+	return url
+
+
 getLeaders("american", "rbi", "2016")
