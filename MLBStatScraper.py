@@ -6,24 +6,22 @@ import datetime
 
 def getLeaders(league, statType, year):
 	statColumnDict = {"ops" : "17", "avg" : "14", "rbi" : "9", "hr" : "8"}
-	#urls to parse, use request with "User-Agent" header to prevent MLB from blocking bot
+
+	#use request with "User-Agent" header to prevent MLB from blocking bot
 	url = getURL(league, statType, year)
 	request = Request(url, headers={"User-Agent": "XYZ/3.0"})
 
 	#download webpage, read contents, and close reader
-	downloadedOPSPage = urlopen(request)
-	opsPageHtml = downloadedOPSPage.read()
-	downloadedOPSPage.close()
+	downloadedPage = urlopen(request)
+	pageHtml = downloadedPage.read()
+	downloadedPage.close()
 
 	#create Beautiful Soup object to parse html page contents
-	opsSoup = soup(opsPageHtml, "html.parser")
+	baseballSoup = soup(pageHtml, "html.parser")
 
-	#find place in HTML containing player names in the table (ordered based on selected attribute)
-	playerNames = opsSoup.find_all("span", {"class": "full-3fV3c9pF"})
-
-	#find column specific stat
-	stats = opsSoup.select("td[data-col=\"" + statColumnDict[statType] + "\"]")
-
+	#find place in HTML containing player names, and stats in the table (ordered based on statType)
+	playerNames = baseballSoup.find_all("span", {"class": "full-3fV3c9pF"})
+	stats = baseballSoup.select("td[data-col=\"" + statColumnDict[statType] + "\"]")
 
 	#loop through list of player name by 2, and parse the html to retrieve a str object for first and last name
 	rank = 1;
