@@ -4,7 +4,7 @@ from urllib.request import Request, urlopen
 import datetime
 
 
-def getOPSLeaders(league, year):
+def getLeadersDecimal(league, year):
 	statDictionary = {"ops" : "17", "avg" : "14", "hr" : "8", "rbi" : "9"}
 	#urls to parse, use request with "User-Agent" header to prevent MLB from blocking bot
 	url = "https://www.mlb.com/stats/" + league + "-league/" + year
@@ -57,15 +57,18 @@ def getOPSLeaders(league, year):
 		statIndex += 1
 
 
-def getRBILeaders(league, year):
+def getLeadersInteger(league, statType, year):
+	statTypeDict = {"hr" : "home-runs", "rbi" : "rbi"}
+	statColumnDict = {"hr" : "8", "rbi" : "9"}
+
 	#urls to parse, use request with "User-Agent" header to prevent MLB from blocking bot
 	now = datetime.datetime.now()
 	currentYear = int(now.year)
 	if year == currentYear:
-		url = "https://www.mlb.com/stats/" + league + "-league/home-runs"
+		url = "https://www.mlb.com/stats/" + league + "-league/" + statTypeDict[statType]
 		#url = "https://www.mlb.com/stats/" + league + "-league/rbi"
 	else:
-		url = "https://www.mlb.com/stats/" + league + "-league/home-runs/" + year
+		url = "https://www.mlb.com/stats/" + league + "-league/" + statTypeDict[statType] + "/" + year
 		#url = "https://www.mlb.com/stats/" + league + "-league/rbi/" + year
 	request = Request(url, headers={"User-Agent": "XYZ/3.0"})
 
@@ -81,7 +84,7 @@ def getRBILeaders(league, year):
 	playerNames = rbiSoup.find_all("span", {"class": "full-3fV3c9pF"})
 
 	#find column specific stat
-	stats = rbiSoup.select("td[data-col=\"8\"]")
+	stats = rbiSoup.select("td[data-col=\"" + statColumnDict[statType] + "\"]")
 	#stats = rbiSoup.select("td[data-col=\"9\"]")
 
 
@@ -124,4 +127,4 @@ def getRBILeaders(league, year):
 		statIndex += 1
 
 
-getRBILeaders("american", "2016")
+getLeadersInteger("american", "hr" ,"2016")
