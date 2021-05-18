@@ -51,21 +51,27 @@ def getLeadersDecimal(league, statType, year):
 		#get the desired stat
 		desiredStatLine = str(stats[statIndex])
 
-		#get the desired stat line
-		desiredStatLine = str(stats[statIndex])
-		statEndingIndex = len(desiredStatLine) - 1
-		#loop through the stat line and decrement the ending index of the stat until we find a number
-		while not desiredStatLine[statEndingIndex - 1].isdigit():
-			statEndingIndex -= 1
+##############################################################
 
-		desiredStatLine = desiredStatLine[0 : statEndingIndex]
-		statStartingIndex = len(desiredStatLine) - 1
+		#get the desired stat line
+		#desiredStatLine = str(stats[statIndex])
+		#statEndingIndex = len(desiredStatLine) - 1
+		#loop through the stat line and decrement the ending index of the stat until we find a number
+		#while not desiredStatLine[statEndingIndex - 1].isdigit():
+			#statEndingIndex -= 1
+
+		#desiredStatLine = desiredStatLine[0 : statEndingIndex]
+		#statStartingIndex = len(desiredStatLine) - 1
 
 		#increment the statStartingIndex if the character at that pos is not a number or a decimal
-		while desiredStatLine[statStartingIndex -1] == '.' or desiredStatLine[statStartingIndex -1].isdigit():
-			statStartingIndex -= 1
+		#while desiredStatLine[statStartingIndex - 1] == '.' or desiredStatLine[statStartingIndex -1].isdigit():
+			#statStartingIndex -= 1
 
-		stat = float(desiredStatLine[statStartingIndex : ])
+		statIndecesTuple = calculateStatIndecesDecimal(desiredStatLine)
+		statEndingIndex = statIndecesTuple[0]
+		statStartingIndex = statIndecesTuple[1]
+
+		stat = float(desiredStatLine[statStartingIndex : statEndingIndex])
 		print("%d,%s %s,%.3f" % (rank, firstName, lastName, stat))
 
 		rank += 1
@@ -130,21 +136,32 @@ def getLeadersInteger(league, statType, year):
 
 
 def calculateStatIndecesInteger(statLine):
-	statEndingIndex = len(statLine) - 1
-
 	#loop through the stat line and decrement the ending index of the stat until we find a number
+	statEndingIndex = len(statLine) - 1
 	while not statLine[statEndingIndex - 1].isdigit():
 		statEndingIndex -= 1
 
-	#since statEndingIndex is the first char before the number starts, we want the startingIndex to be the
-	#first digit (from the end) of the stat
+	#set starting index to equal first digit, loop through and decrement starting index until we find a char
 	statStartingIndex = statEndingIndex - 1
-
 	while statLine[statStartingIndex].isdigit() and statLine[statStartingIndex - 1].isdigit():
 		statStartingIndex -= 1
 
 	return (statEndingIndex, statStartingIndex)
 
 
-getLeadersInteger("american", "rbi" ,"2016")
-#getLeadersDecimal("american", "avg", "2016")
+def calculateStatIndecesDecimal(statLine):
+	#loop through the stat line and decrement the ending index of the stat until we find a number
+	statEndingIndex = len(statLine) - 1
+	while not statLine[statEndingIndex - 1].isdigit():
+		statEndingIndex -= 1
+
+	#increment the statStartingIndex if the character at that pos is not a number or a decimal
+	statStartingIndex = statEndingIndex - 1
+	while statLine[statStartingIndex - 1] == '.' or statLine[statStartingIndex -1].isdigit():
+		statStartingIndex -= 1
+
+	return (statEndingIndex, statStartingIndex)
+
+
+#getLeadersInteger("american", "rbi" ,"2016")
+getLeadersDecimal("american", "ops", "2016")
