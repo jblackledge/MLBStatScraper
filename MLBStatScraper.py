@@ -2,6 +2,7 @@ import urllib.request
 from bs4 import BeautifulSoup as soup
 from urllib.request import Request, urlopen
 import datetime
+from timeit import default_timer as timer
 
 
 def getLeaders(league, statType, year):
@@ -45,12 +46,12 @@ def getLeaders(league, statType, year):
 		statEndingIndex = statIndecesTuple[0]
 		statStartingIndex = statIndecesTuple[1]
 
-		if statType != "ops" or statType != "avg":
-			stat = int(statLine[statStartingIndex : statEndingIndex])
-			print("%d,%s %s,%d" % (rank, firstName, lastName, stat))
-		else:
+		if statType == "ops" or statType == "avg":
 			stat = float(statLine[statStartingIndex : statEndingIndex])
-			print("%d,%s %s,%.3f" % (rank, firstName, lastName, stat))
+			#print("%d,%s %s,%d" % (rank, firstName, lastName, stat))
+		else:
+			stat = int(statLine[statStartingIndex : statEndingIndex])
+			#print("%d,%s %s,%.3f" % (rank, firstName, lastName, stat))
 
 		rank += 1
 		statIndex += 1
@@ -72,9 +73,9 @@ def calculateStatIndeces(statLine):
 
 def getURL(league, statType, year):
 	statTypeDict = {"ops" : "", "avg" : "batting-average", "hr" : "home-runs", "rbi" : "rbi"}
-
 	now = datetime.datetime.now()
 	currentYear = int(now.year)
+
 	if year == currentYear:
 		url = "https://www.mlb.com/stats/" + league + "-league/" + statTypeDict[statType]
 	else:
@@ -83,4 +84,196 @@ def getURL(league, statType, year):
 	return url
 
 
-getLeaders("american", "rbi", "2016")
+def testAll():
+	leagues = ["national", "american"]
+	statTypes = ["ops", "avg", "hr", "rbi"]
+	now = datetime.datetime.now()
+	currentYear = int(now.year)
+
+	for league in leagues:
+		for statType in statTypes:
+			for year in range(1903, currentYear):
+				try:
+					getLeaders(league, statType, str(year))
+					print("Success: %s, %s, %s" % (league, statType, str(year)))
+				except Exception as e:
+					print(str(e) + ": " + league + ", " + statType + ", " + str(year))
+
+
+def testNationalOPS():
+	start = timer()
+	now = datetime.datetime.now()
+	currentYear = int(now.year)
+	oldestStatYear = 1903
+
+	for year in range(oldestStatYear, currentYear):
+		try:
+			getLeaders("national", "ops", str(year))
+			print("Success: national, ops, %s" % (str(year)))
+		except Exception as e:
+			print(str(e) + ": national, ops, %s" % (str(year)))
+
+	end = timer()
+	if end - start >= 60:
+		minutes = (end - start) / 60
+		print("Elapsed time: %s" % str(minutes))
+	else:
+		print(end - start)
+
+
+def testNationalAVG():
+	start = timer()
+	now = datetime.datetime.now()
+	currentYear = int(now.year)
+	oldestStatYear = 1903
+
+	for year in range(oldestStatYear, currentYear):
+		try:
+			getLeaders("national", "avg", str(year))
+			print("Success: national, avg, %s" % (str(year)))
+		except Exception as e:
+			print(str(e) + ": national, avg, %s" % (str(year)))
+
+	end = timer()
+	if end - start >= 60:
+		minutes = (end - start) / 60
+		print("Elapsed time: %s" % str(minutes))
+	else:
+		print(end - start)
+
+
+def testNationalHR():
+	start = timer()
+	now = datetime.datetime.now()
+	currentYear = int(now.year)
+	oldestStatYear = 1903
+
+	for year in range(oldestStatYear, currentYear):
+		try:
+			getLeaders("national", "hr", str(year))
+			print("Success: national, hr, %s" % (str(year)))
+		except Exception as e:
+			print(str(e) + ": national, hr, %s" % (str(year)))
+
+	end = timer()
+	if end - start >= 60:
+		minutes = (end - start) / 60
+		print("Elapsed time: %s" % str(minutes))
+	else:
+		print(end - start)
+
+
+def testNationalRBI():
+	start = timer()
+	now = datetime.datetime.now()
+	currentYear = int(now.year)
+	oldestStatYear = 1903
+
+	for year in range(oldestStatYear, currentYear):
+		try:
+			getLeaders("national", "rbi", str(year))
+			print("Success: national, rbi, %s" % (str(year)))
+		except Exception as e:
+			print(str(e) + ": national, rbi, %s" % (str(year)))
+
+	end = timer()
+	if end - start >= 60:
+		minutes = (end - start) / 60
+		print("Elapsed time: %s" % str(minutes))
+	else:
+		print(end - start)
+
+
+def testAmericanOPS():
+	start = timer()
+	now = datetime.datetime.now()
+	currentYear = int(now.year)
+	oldestStatYear = 1903
+
+	for year in range(oldestStatYear, currentYear):
+		try:
+			getLeaders("american", "ops", str(year))
+			print("Success: american, ops, %s" % (str(year)))
+		except Exception as e:
+			print(str(e) + ": american, ops, %s" % (str(year)))
+
+	end = timer()
+	if end - start >= 60:
+		minutes = (end - start) / 60
+		print("Elapsed time: %s" % str(minutes))
+	else:
+		print(end - start)
+
+
+def testAmericanAVG():
+	start = timer()
+	now = datetime.datetime.now()
+	currentYear = int(now.year)
+	oldestStatYear = 1903
+
+	for year in range(oldestStatYear, currentYear):
+		try:
+			getLeaders("american", "avg", str(year))
+			print("Success: american, avg, %s" % (str(year)))
+		except Exception as e:
+			print(str(e) + ": american, avg, %s" % (str(year)))
+
+	end = timer()
+	if end - start >= 60:
+		minutes = (end - start) / 60
+		print("Elapsed time: %s" % str(minutes))
+	else:
+		print(end - start)
+
+
+def testAmericanHR():
+	start = timer()
+	now = datetime.datetime.now()
+	currentYear = int(now.year)
+	oldestStatYear = 1903
+
+	for year in range(oldestStatYear, currentYear):
+		try:
+			getLeaders("american", "hr", str(year))
+			print("Success: american, hr, %s" % (str(year)))
+		except Exception as e:
+			print(str(e) + ": american, hr, %s" % (str(year)))
+
+	end = timer()
+	if end - start >= 60:
+		minutes = (end - start) / 60
+		print("Elapsed time: %s" % str(minutes))
+	else:
+		print(end - start)
+
+
+def testAmericanRBI():
+	start = timer()
+	now = datetime.datetime.now()
+	currentYear = int(now.year)
+	oldestStatYear = 1903
+
+	for year in range(oldestStatYear, currentYear):
+		try:
+			getLeaders("american", "rbi", str(year))
+			print("Success: american, rbi, %s" % (str(year)))
+		except Exception as e:
+			print(str(e) + ": american, rbi, %s" % (str(year)))
+
+	end = timer()
+	if end - start >= 60:
+		minutes = (end - start) / 60
+		print("Elapsed time: %s" % str(minutes))
+	else:
+		print(end - start)
+
+
+#testNationalOPS()
+#testNationalAVG()
+#testNationalHR()
+#testNationalRBI()
+
+#testAmericanOPS()
+#testAmericanAVG()
+#testAmericanHR()
+#testAmericanRBI()
