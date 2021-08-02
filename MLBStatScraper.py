@@ -30,7 +30,7 @@ def getLeaders(league, statType, year):
 
 	#create an empty csv file to write our stats to
 	datestamp = generateDatestamp()
-	csvFilenameString = "MLBStatScraper_" + datestamp + '_' + league + '_' + statType + ".csv"
+	csvFilenameString = "MLBStatScraper_" + datestamp + '_' + league + '_' + statType + '_' + year + ".csv"
 	csvFile = open(csvFilenameString, 'w')
 
 	#loop through the list of players and create a csv line including rank, name, and stats
