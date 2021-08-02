@@ -327,7 +327,17 @@ def testAmericanRBI():
 
 now = datetime.datetime.now()
 currentYearString = str(now.year)
-getLeaders("national", "ops", currentYearString)
+#getLeaders("national", "ops", currentYearString)
 #getLeaders("national", "avg", currentYearString)
 #getLeaders("national", "rbi", currentYearString)
 #getLeaders("national", "hr", currentYearString)
+
+#getLeaders("american", "ops", currentYearString)
+#getLeaders("american", "avg", currentYearString)
+#getLeaders("american", "rbi", currentYearString)
+#getLeaders("american", "hr", currentYearString)
+
+#getLeaders("mlb", "ops", currentYearString)
+#getLeaders("mlb", "avg", currentYearString)
+#getLeaders("mlb", "rbi", currentYearString)
+#getLeaders("mlb", "hr", currentYearString)
