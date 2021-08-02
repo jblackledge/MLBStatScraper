@@ -28,7 +28,10 @@ def getLeaders(league, statType, year):
 	nameStartingIndex = 28
 	nameEndingIndex = -7
 
+	#create an empty csv file to write our stats to
 	datestamp = generateDatestamp()
+	csvFilenameString = "MLBStatScraper_" + datestamp + '_' + league + '_' + statType + ".csv"
+	csvFile = open(csvFilenameString, 'w')
 
 	#loop through the list of players and create a csv line including rank, name, and stats
 	for i in range(0, len(playerNames), 2):
@@ -48,7 +51,7 @@ def getLeaders(league, statType, year):
 
 		rank += 1
 		statIndex += 1
-		print(csvLine)
+		csvFile.write(csvLine)
 
 
 def getStatsForIndex(statIndex, baseballSoup):
@@ -79,6 +82,8 @@ def getStatsForIndex(statIndex, baseballSoup):
 		#leave comma off of the last stat
 		if statType != "hr":
 			csvLine = csvLine + ','
+		else:
+			csvLine = csvLine + '\n'
 
 	return csvLine
 
