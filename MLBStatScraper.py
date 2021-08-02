@@ -28,6 +28,7 @@ def getLeaders(league, statType, year):
 	nameStartingIndex = 28
 	nameEndingIndex = -7
 
+	#loop through the list of players and create a csv line including rank, name, and stats
 	for i in range(0, len(playerNames), 2):
 		csvLine = str(rank) + ','
 
@@ -35,11 +36,12 @@ def getLeaders(league, statType, year):
 		firstNameLine = str(playerNames[i])
 		lastNameLine = str(playerNames[i + 1])
 
-		#parse string, leaving only the name
+		#parse string, leaving only the name and add to the csv line
 		firstName = str(firstNameLine[nameStartingIndex : nameEndingIndex])
 		lastName = str(lastNameLine[nameStartingIndex : nameEndingIndex])
 		csvLine = csvLine + firstName + ' ' + lastName + ','
 
+		#add the stats to the csv line for the given stat index
 		csvLine = csvLine + getStatsForIndex(statIndex, baseballSoup)
 
 		rank += 1
@@ -55,10 +57,10 @@ def getStatsForIndex(statIndex, baseballSoup):
 		#parse the html using the appropriate stat column number from the dictionary
 		stats = baseballSoup.select("td[data-col=\"" + statColumnDict[statType] + "\"]")
 
-
 		#get the desired stat
 		statLine = str(stats[statIndex])
 
+		#get the indeces of where the stat starts and begins in the html
 		statIndecesTuple = calculateStatIndeces(statLine)
 		statEndingIndex = statIndecesTuple[0]
 		statStartingIndex = statIndecesTuple[1]
@@ -66,11 +68,15 @@ def getStatsForIndex(statIndex, baseballSoup):
 		if statType == "ops" or statType == "avg":
 			stat = float(statLine[statStartingIndex : statEndingIndex])
 			statString = "{statistic:.3f}"
-			csvLine = csvLine + statString.format(statistic = stat) + ","
+			csvLine = csvLine + statString.format(statistic = stat)
 		else:
 			stat = int(statLine[statStartingIndex : statEndingIndex])
 			statString = str(stat)
-			csvLine = csvLine + statString + ","
+			csvLine = csvLine + statString
+
+		#leave comma off of the last stat
+		if statType != "hr":
+			csvLine = csvLine + ','
 
 	return csvLine
 
