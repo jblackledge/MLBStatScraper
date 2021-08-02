@@ -48,10 +48,10 @@ def getLeaders(league, statType, year):
 
 		if statType == "ops" or statType == "avg":
 			stat = float(statLine[statStartingIndex : statEndingIndex])
-			#print("%d,%s %s,%d" % (rank, firstName, lastName, stat))
+			print("%d,%s %s,%.3f" % (rank, firstName, lastName, stat))
 		else:
 			stat = int(statLine[statStartingIndex : statEndingIndex])
-			#print("%d,%s %s,%.3f" % (rank, firstName, lastName, stat))
+			print("%d,%s %s,%d" % (rank, firstName, lastName, stat))
 
 		rank += 1
 		statIndex += 1
@@ -277,3 +277,8 @@ def testAmericanRBI():
 #testAmericanAVG()
 #testAmericanHR()
 #testAmericanRBI()
+
+getLeaders("national", "ops", "2021")
+#getLeaders("national", "avg", "2021")
+#getLeaders("national", "rbi", "2021")
+#getLeaders("national", "hr", "2021")
