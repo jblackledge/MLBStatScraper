@@ -22,7 +22,6 @@ def getLeaders(league, statType, year):
 
 	#find place in HTML containing player names, and stats in the table (ordered based on statType)
 	playerNames = baseballSoup.find_all("span", {"class": "full-3fV3c9pF"})
-	stats = baseballSoup.select("td[data-col=\"" + statColumnDict[statType] + "\"]")
 
 	#loop through list of player name by 2, and parse the html to retrieve a str object for first and last name
 	rank = 1;
@@ -31,6 +30,8 @@ def getLeaders(league, statType, year):
 	nameEndingIndex = -7
 
 	for i in range(0, len(playerNames), 2):
+		csvLine = str(rank) + ','
+
 		#get first and last name of current player as string
 		firstNameLine = str(playerNames[i])
 		lastNameLine = str(playerNames[i + 1])
@@ -38,23 +39,32 @@ def getLeaders(league, statType, year):
 		#parse string, leaving only the name
 		firstName = str(firstNameLine[nameStartingIndex : nameEndingIndex])
 		lastName = str(lastNameLine[nameStartingIndex : nameEndingIndex])
+		csvLine = csvLine + firstName + ' ' + lastName + ','
 
-		#get the desired stat
-		statLine = str(stats[statIndex])
+		for statType in statColumnDict:
+			#parse the html using the appropriate stat column number from the dictionary
+			stats = baseballSoup.select("td[data-col=\"" + statColumnDict[statType] + "\"]")
 
-		statIndecesTuple = calculateStatIndeces(statLine)
-		statEndingIndex = statIndecesTuple[0]
-		statStartingIndex = statIndecesTuple[1]
 
-		if statType == "ops" or statType == "avg":
-			stat = float(statLine[statStartingIndex : statEndingIndex])
-			print("%d,%s %s,%.3f" % (rank, firstName, lastName, stat))
-		else:
-			stat = int(statLine[statStartingIndex : statEndingIndex])
-			print("%d,%s %s,%d" % (rank, firstName, lastName, stat))
+			#get the desired stat
+			statLine = str(stats[statIndex])
+
+			statIndecesTuple = calculateStatIndeces(statLine)
+			statEndingIndex = statIndecesTuple[0]
+			statStartingIndex = statIndecesTuple[1]
+
+			if statType == "ops" or statType == "avg":
+				stat = float(statLine[statStartingIndex : statEndingIndex])
+				statString = "{statistic:.3f}"
+				csvLine = csvLine + statString.format(statistic = stat) + ","
+			else:
+				stat = int(statLine[statStartingIndex : statEndingIndex])
+				statString = str(stat)
+				csvLine = csvLine + statString + ","
 
 		rank += 1
 		statIndex += 1
+		print(csvLine)
 
 
 def calculateStatIndeces(statLine):
