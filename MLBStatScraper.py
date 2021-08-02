@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup as soup
 from urllib.request import Request, urlopen
 import datetime
 from timeit import default_timer as timer
+import sys
 
 
 def getLeaders(league, statType, year):
@@ -324,7 +325,9 @@ def testAmericanRBI():
 #testAmericanHR()
 #testAmericanRBI()
 
-getLeaders("national", "ops", "2021")
-#getLeaders("national", "avg", "2021")
-#getLeaders("national", "rbi", "2021")
-#getLeaders("national", "hr", "2021")
+now = datetime.datetime.now()
+currentYearString = str(now.year)
+getLeaders("national", "ops", currentYearString)
+#getLeaders("national", "avg", currentYearString)
+#getLeaders("national", "rbi", currentYearString)
+#getLeaders("national", "hr", currentYearString)
