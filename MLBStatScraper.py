@@ -28,6 +28,8 @@ def getLeaders(league, statType, year):
 	nameStartingIndex = 28
 	nameEndingIndex = -7
 
+	datestamp = generateDatestamp()
+
 	#loop through the list of players and create a csv line including rank, name, and stats
 	for i in range(0, len(playerNames), 2):
 		csvLine = str(rank) + ','
@@ -93,6 +95,21 @@ def calculateStatIndeces(statLine):
 		statStartingIndex -= 1
 
 	return (statEndingIndex, statStartingIndex)
+
+
+def generateDatestamp():
+	now = datetime.datetime.now()
+	currentYear = now.year
+	currentYearString = str(currentYear)
+
+	currentMonth = now.month
+	currentMonthString = str(("%02d" % currentMonth))
+
+	currentDate = now.day
+	currentDateString = str(("%02d" % currentDate))
+
+	datestampString = currentYearString + currentMonthString + currentDateString
+	return datestampString
 
 
 def getURL(league, statType, year):
