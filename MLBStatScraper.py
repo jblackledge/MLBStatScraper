@@ -6,7 +6,6 @@ from timeit import default_timer as timer
 
 
 def getLeaders(league, statType, year):
-	statColumnDict = {"ops" : "17", "avg" : "14", "rbi" : "9", "hr" : "8"}
 
 	#use request with "User-Agent" header to prevent MLB from blocking bot
 	url = getURL(league, statType, year)
@@ -41,30 +40,39 @@ def getLeaders(league, statType, year):
 		lastName = str(lastNameLine[nameStartingIndex : nameEndingIndex])
 		csvLine = csvLine + firstName + ' ' + lastName + ','
 
-		for statType in statColumnDict:
-			#parse the html using the appropriate stat column number from the dictionary
-			stats = baseballSoup.select("td[data-col=\"" + statColumnDict[statType] + "\"]")
-
-
-			#get the desired stat
-			statLine = str(stats[statIndex])
-
-			statIndecesTuple = calculateStatIndeces(statLine)
-			statEndingIndex = statIndecesTuple[0]
-			statStartingIndex = statIndecesTuple[1]
-
-			if statType == "ops" or statType == "avg":
-				stat = float(statLine[statStartingIndex : statEndingIndex])
-				statString = "{statistic:.3f}"
-				csvLine = csvLine + statString.format(statistic = stat) + ","
-			else:
-				stat = int(statLine[statStartingIndex : statEndingIndex])
-				statString = str(stat)
-				csvLine = csvLine + statString + ","
+		csvLine = csvLine + getStatsForIndex(statIndex, baseballSoup)
 
 		rank += 1
 		statIndex += 1
 		print(csvLine)
+
+
+def getStatsForIndex(statIndex, baseballSoup):
+	statColumnDict = {"ops" : "17", "avg" : "14", "rbi" : "9", "hr" : "8"}
+	csvLine = str()
+
+	for statType in statColumnDict:
+		#parse the html using the appropriate stat column number from the dictionary
+		stats = baseballSoup.select("td[data-col=\"" + statColumnDict[statType] + "\"]")
+
+
+		#get the desired stat
+		statLine = str(stats[statIndex])
+
+		statIndecesTuple = calculateStatIndeces(statLine)
+		statEndingIndex = statIndecesTuple[0]
+		statStartingIndex = statIndecesTuple[1]
+
+		if statType == "ops" or statType == "avg":
+			stat = float(statLine[statStartingIndex : statEndingIndex])
+			statString = "{statistic:.3f}"
+			csvLine = csvLine + statString.format(statistic = stat) + ","
+		else:
+			stat = int(statLine[statStartingIndex : statEndingIndex])
+			statString = str(stat)
+			csvLine = csvLine + statString + ","
+
+	return csvLine
 
 
 def calculateStatIndeces(statLine):
