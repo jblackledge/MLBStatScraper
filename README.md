@@ -1,7 +1,7 @@
 # MLBStatScraper
 This script scrapes and parses the MLB website to generate a csv file of the MLB leaders of a chosen league
-and year, sorted by the chosen stat type. The csv file lists the rank, name, OPS, batting average, RBI's, 
-and HR's for each player. The generated csv files are perfect for simple machine learning and data science 
+and year. The csv file lists the rank, name, OPS, batting average, RBI's, 
+and HR's for each player, sorted by the chosen stat type. The generated csv files are perfect for simple machine learning and data science 
 projects.
 
 
