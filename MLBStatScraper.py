@@ -32,7 +32,7 @@ def getLeaders(league, statType, year):
 	#create an empty csv file to write our stats to
 	datestamp = generateDatestamp()
 	csvFilenameString = "MLBStatScraper_" + datestamp + '_' + league + '_' + statType + '_' + year + ".csv"
-	csvFile = open(csvFilenameString, 'w')
+	#csvFile = open(csvFilenameString, 'w')
 
 	#loop through the list of players and create a csv line including rank, name, and stats
 	for i in range(0, len(playerNames), 2):
@@ -52,7 +52,7 @@ def getLeaders(league, statType, year):
 
 		rank += 1
 		statIndex += 1
-		csvFile.write(csvLine)
+		#csvFile.write(csvLine)
 
 
 def getStatsForIndex(statIndex, baseballSoup):
@@ -132,14 +132,15 @@ def getURL(league, statType, year):
 
 
 def testAll():
-	leagues = ["national", "american"]
+	leagues = ["national", "american", "mlb"]
 	statTypes = ["ops", "avg", "hr", "rbi"]
 	now = datetime.datetime.now()
 	currentYear = int(now.year)
+	oldestStatYear = 1903
 
 	for league in leagues:
 		for statType in statTypes:
-			for year in range(1903, currentYear):
+			for year in range(oldestStatYear, currentYear + 1):
 				try:
 					getLeaders(league, statType, str(year))
 					print("Success: %s, %s, %s" % (league, statType, str(year)))
@@ -153,7 +154,7 @@ def testNationalOPS():
 	currentYear = int(now.year)
 	oldestStatYear = 1903
 
-	for year in range(oldestStatYear, currentYear):
+	for year in range(oldestStatYear, currentYear + 1):
 		try:
 			getLeaders("national", "ops", str(year))
 			print("Success: national, ops, %s" % (str(year)))
@@ -174,7 +175,7 @@ def testNationalAVG():
 	currentYear = int(now.year)
 	oldestStatYear = 1903
 
-	for year in range(oldestStatYear, currentYear):
+	for year in range(oldestStatYear, currentYear + 1):
 		try:
 			getLeaders("national", "avg", str(year))
 			print("Success: national, avg, %s" % (str(year)))
@@ -195,7 +196,7 @@ def testNationalHR():
 	currentYear = int(now.year)
 	oldestStatYear = 1903
 
-	for year in range(oldestStatYear, currentYear):
+	for year in range(oldestStatYear, currentYear + 1):
 		try:
 			getLeaders("national", "hr", str(year))
 			print("Success: national, hr, %s" % (str(year)))
@@ -216,7 +217,7 @@ def testNationalRBI():
 	currentYear = int(now.year)
 	oldestStatYear = 1903
 
-	for year in range(oldestStatYear, currentYear):
+	for year in range(oldestStatYear, currentYear + 1):
 		try:
 			getLeaders("national", "rbi", str(year))
 			print("Success: national, rbi, %s" % (str(year)))
@@ -237,7 +238,7 @@ def testAmericanOPS():
 	currentYear = int(now.year)
 	oldestStatYear = 1903
 
-	for year in range(oldestStatYear, currentYear):
+	for year in range(oldestStatYear, currentYear + 1):
 		try:
 			getLeaders("american", "ops", str(year))
 			print("Success: american, ops, %s" % (str(year)))
@@ -258,7 +259,7 @@ def testAmericanAVG():
 	currentYear = int(now.year)
 	oldestStatYear = 1903
 
-	for year in range(oldestStatYear, currentYear):
+	for year in range(oldestStatYear, currentYear + 1):
 		try:
 			getLeaders("american", "avg", str(year))
 			print("Success: american, avg, %s" % (str(year)))
@@ -279,7 +280,7 @@ def testAmericanHR():
 	currentYear = int(now.year)
 	oldestStatYear = 1903
 
-	for year in range(oldestStatYear, currentYear):
+	for year in range(oldestStatYear, currentYear + 1):
 		try:
 			getLeaders("american", "hr", str(year))
 			print("Success: american, hr, %s" % (str(year)))
@@ -300,12 +301,98 @@ def testAmericanRBI():
 	currentYear = int(now.year)
 	oldestStatYear = 1903
 
-	for year in range(oldestStatYear, currentYear):
+	for year in range(oldestStatYear, currentYear + 1):
 		try:
 			getLeaders("american", "rbi", str(year))
 			print("Success: american, rbi, %s" % (str(year)))
 		except Exception as e:
 			print(str(e) + ": american, rbi, %s" % (str(year)))
+
+	end = timer()
+	if end - start >= 60:
+		minutes = (end - start) / 60
+		print("Elapsed time: %s" % str(minutes))
+	else:
+		print(end - start)
+
+
+
+
+def testMLBOPS():
+	start = timer()
+	now = datetime.datetime.now()
+	currentYear = int(now.year)
+	oldestStatYear = 1903
+
+	for year in range(oldestStatYear, currentYear + 1):
+		try:
+			getLeaders("mlb", "ops", str(year))
+			print("Success: mlb, ops, %s" % (str(year)))
+		except Exception as e:
+			print(str(e) + ": mlb, ops, %s" % (str(year)))
+
+	end = timer()
+	if end - start >= 60:
+		minutes = (end - start) / 60
+		print("Elapsed time: %s" % str(minutes))
+	else:
+		print(end - start)
+
+
+def testMLBAVG():
+	start = timer()
+	now = datetime.datetime.now()
+	currentYear = int(now.year)
+	oldestStatYear = 1903
+
+	for year in range(oldestStatYear, currentYear + 1):
+		try:
+			getLeaders("mlb", "avg", str(year))
+			print("Success: mlb, avg, %s" % (str(year)))
+		except Exception as e:
+			print(str(e) + ": mlb, avg, %s" % (str(year)))
+
+	end = timer()
+	if end - start >= 60:
+		minutes = (end - start) / 60
+		print("Elapsed time: %s" % str(minutes))
+	else:
+		print(end - start)
+
+
+def testMLBHR():
+	start = timer()
+	now = datetime.datetime.now()
+	currentYear = int(now.year)
+	oldestStatYear = 1903
+
+	for year in range(oldestStatYear, currentYear + 1):
+		try:
+			getLeaders("mlb", "hr", str(year))
+			print("Success: mlb, hr, %s" % (str(year)))
+		except Exception as e:
+			print(str(e) + ": mlb, hr, %s" % (str(year)))
+
+	end = timer()
+	if end - start >= 60:
+		minutes = (end - start) / 60
+		print("Elapsed time: %s" % str(minutes))
+	else:
+		print(end - start)
+
+
+def testMLBRBI():
+	start = timer()
+	now = datetime.datetime.now()
+	currentYear = int(now.year)
+	oldestStatYear = 1903
+
+	for year in range(oldestStatYear, currentYear + 1):
+		try:
+			getLeaders("mlb", "rbi", str(year))
+			print("Success: mlb, rbi, %s" % (str(year)))
+		except Exception as e:
+			print(str(e) + ": mlb, rbi, %s" % (str(year)))
 
 	end = timer()
 	if end - start >= 60:
@@ -325,9 +412,14 @@ def testAmericanRBI():
 #testAmericanHR()
 #testAmericanRBI()
 
+#testMLBOPS()
+#testMLBAVG()
+#testMLBHR()
+#testMLBRBI()
+
 now = datetime.datetime.now()
 currentYearString = str(now.year)
-#getLeaders("national", "ops", currentYearString)
+getLeaders("national", "ops", currentYearString)
 #getLeaders("national", "avg", currentYearString)
 #getLeaders("national", "rbi", currentYearString)
 #getLeaders("national", "hr", currentYearString)
