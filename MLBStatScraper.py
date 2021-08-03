@@ -134,6 +134,10 @@ def isValidYear(year):
 	return (year >= oldestStatYear) and (year <= currentYear)
 
 
+def isValidYearOrder(beginningYear, endingYear):
+	return endingYear >= beginningYear
+
+
 def getURL(league, statType, year):
 	statTypeDict = {"ops" : "", "avg" : "batting-average", "hr" : "home-runs", "rbi" : "rbi"}
 	now = datetime.datetime.now()
@@ -145,6 +149,20 @@ def getURL(league, statType, year):
 		url = "https://www.mlb.com/stats/" + league + "-league/" + statTypeDict[statType] + "/" + year
 
 	return url
+
+
+def runAllCustomYearSpan(beginningYear, endingYear):
+	leagues = ["national", "american", "mlb"]
+	statTypes = ["ops", "avg", "hr", "rbi"]
+
+	for league in leagues:
+		for statType in statTypes:
+			for year in range(beginningYear, endingYear + 1):
+				try:
+					getLeaders(league, statType, str(year))
+					print("Success: %s, %s, %s" % (league, statType, str(year)))
+				except Exception as e:
+					print(str(e) + ": " + league + ", " + statType + ", " + str(year))
 
 
 def testAll():
@@ -418,22 +436,7 @@ def testMLBRBI():
 		print(end - start)
 
 
-#testAll()
-#testNationalOPS()
-#testNationalAVG()
-#testNationalHR()
-#testNationalRBI()
-
-#testAmericanOPS()
-#testAmericanAVG()
-#testAmericanHR()
-#testAmericanRBI()
-
-#testMLBOPS()
-#testMLBAVG()
-#testMLBHR()
-#testMLBRBI()
-
+#main
 league = str()
 statType = str()
 year = str()
@@ -451,6 +454,12 @@ elif len(sys.argv) == 2:
 		testAll()
 	else:
 		print("Error: invalid input")
+#if there are three arguments, the user is inputting a custom year span to run all leagues and stat types
+elif len(sys.argv) == 3:
+	if isValidYear(int(sys.argv[1])) and isValidYear(int(sys.argv[2])) and isValidYearOrder(int(sys.argv[1]), int(sys.argv[2])):
+		runAllCustomYearSpan(int(sys.argv[1]), int(sys.argv[2]))
+	else:
+		print("Error: invalid input")
 #if there are four arguments, the user has input a league, stat type and year, so we must check that they
 #are valid before running the script
 elif len(sys.argv) == 4:
@@ -463,20 +472,3 @@ elif len(sys.argv) == 4:
 		print("Error: invalid input")
 else:
 	print("Error: invalid number of arguments")
-
-
-
-#getLeaders("national", "avg", currentYearString)
-#getLeaders("national", "avg", currentYearString)
-#getLeaders("national", "rbi", currentYearString)
-#getLeaders("national", "hr", currentYearString)
-
-#getLeaders("american", "ops", currentYearString)
-#getLeaders("american", "avg", currentYearString)
-#getLeaders("american", "rbi", currentYearString)
-#getLeaders("american", "hr", currentYearString)
-
-#getLeaders("mlb", "ops", currentYearString)
-#getLeaders("mlb", "avg", currentYearString)
-#getLeaders("mlb", "rbi", currentYearString)
-#getLeaders("mlb", "hr", currentYearString)
