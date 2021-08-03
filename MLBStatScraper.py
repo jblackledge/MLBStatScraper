@@ -443,7 +443,7 @@ currentYearString = str(now.year)
 
 #if there is only one argument, the user is just performing a simple demo of the script
 if len(sys.argv) == 1:
-	getLeaders("national", "ops", currentYearString)
+	getLeaders("mlb", "ops", currentYearString)
 #if there are two arguments, the user is running script for all possible combinations of league, stat type,
 #and year, so we must check that they typed "all"
 elif len(sys.argv) == 2:
