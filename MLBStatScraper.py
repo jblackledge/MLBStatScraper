@@ -32,7 +32,7 @@ def getLeaders(league, statType, year):
 	#create an empty csv file to write our stats to
 	datestamp = generateDatestamp()
 	csvFilenameString = "MLBStatScraper_" + datestamp + '_' + league + '_' + statType + '_' + year + ".csv"
-	#csvFile = open(csvFilenameString, 'w')
+	csvFile = open(csvFilenameString, 'w')
 
 	#loop through the list of players and create a csv line including rank, name, and stats
 	for i in range(0, len(playerNames), 2):
@@ -52,7 +52,7 @@ def getLeaders(league, statType, year):
 
 		rank += 1
 		statIndex += 1
-		#csvFile.write(csvLine)
+		csvFile.write(csvLine)
 
 
 def getStatsForIndex(statIndex, baseballSoup):
@@ -116,6 +116,22 @@ def generateDatestamp():
 
 	datestampString = currentYearString + currentMonthString + currentDateString
 	return datestampString
+
+
+def isValidLeague(league):
+	return (league == "national") or (league == "american") or (league == "mlb")
+
+
+def isValidStatType(statType):
+	return (statType == "ops") or (statType == "avg") or (statType == "rbi") or (statType == "hr")
+
+
+def isValidYear(year):
+	now = datetime.datetime.now()
+	currentYear = now.year
+	oldestStatYear = 1903
+
+	return (year >= oldestStatYear) and (year <= currentYear)
 
 
 def getURL(league, statType, year):
@@ -402,6 +418,7 @@ def testMLBRBI():
 		print(end - start)
 
 
+#testAll()
 #testNationalOPS()
 #testNationalAVG()
 #testNationalHR()
@@ -417,9 +434,39 @@ def testMLBRBI():
 #testMLBHR()
 #testMLBRBI()
 
+league = str()
+statType = str()
+year = str()
+
 now = datetime.datetime.now()
 currentYearString = str(now.year)
-getLeaders("national", "ops", currentYearString)
+
+#if there is only one argument, the user is just performing a simple demo of the script
+if len(sys.argv) == 1:
+	getLeaders("national", "ops", currentYearString)
+#if there are two arguments, the user is running script for all possible combinations of league, stat type,
+#and year, so we must check that they typed "all"
+elif len(sys.argv) == 2:
+	if sys.argv[1] == "all":
+		testAll()
+	else:
+		print("Error: invalid input")
+#if there are four arguments, the user has input a league, stat type and year, so we must check that they
+#are valid before running the script
+elif len(sys.argv) == 4:
+	if isValidLeague(sys.argv[1]) and isValidStatType(sys.argv[2]) and isValidYear(int(sys.argv[3])):
+		league = sys.argv[1]
+		statType = sys.argv[2]
+		year = sys.argv[3]
+		getLeaders(league, statType, year)
+	else:
+		print("Error: invalid input")
+else:
+	print("Error: invalid number of arguments")
+
+
+
+#getLeaders("national", "avg", currentYearString)
 #getLeaders("national", "avg", currentYearString)
 #getLeaders("national", "rbi", currentYearString)
 #getLeaders("national", "hr", currentYearString)
