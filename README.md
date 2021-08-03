@@ -16,6 +16,8 @@ explicitly choose which league, stat-type and year by typing "python3 MLBStatScr
 Alternatively, you can choose to uncomment the examples in main and edit those.
 
 One may also decide they need to download many years of csv data all in one go, to accomplish that, simply
-uncomment the calls to the test functions and use those. The test functions are designed to start from the
+uncomment the calls to the test functions and use those. If you need data from all three leagues for all possible years, simply type in the console "python3 MLBStatScraper.py all". The test functions are designed to start from the
 first year mlb.com has stat records for and run the script to ensure there are no errors that may arise should
-mlb.com ever decide to change their html layout.
+mlb.com ever decide to change their html layout. The tests take approximately twenty minutes to complete per
+stat-type, and running a test provides visual feedback via console print statements to allow you to see how much data
+you've gathered so far.
