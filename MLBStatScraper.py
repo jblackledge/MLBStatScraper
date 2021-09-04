@@ -7,7 +7,6 @@ import sys
 
 
 def getLeaders(league, statType, year):
-
 	#use request with "User-Agent" header to prevent MLB from blocking bot
 	url = getURL(league, statType, year)
 	request = Request(url, headers={"User-Agent": "XYZ/3.0"})
@@ -101,6 +100,104 @@ def calculateStatIndeces(statLine):
 		statStartingIndex -= 1
 
 	return (statEndingIndex, statStartingIndex)
+
+
+def createMVPDict():
+	leagueTuple = ("AL", "NL")
+	mvpDict = dict()
+
+	for league in leagueTuple:
+		#use request with "User-Agent" header to prevent MLB from blocking bot
+		url = "http://m.mlb.com/awards/history-winners/?award_id=" + league + "MVP"
+		request = Request(url, headers={"User-Agent": "XYZ/3.0"})
+
+		#download webpage, read contents, and close reader
+		downloadedPage = urlopen(request)
+		pageHTML = downloadedPage.read()
+		downloadedPage.close()
+
+		#create Beautiful Soup object to parse html page contents
+		mvpSoup = soup(pageHTML, "html.parser")
+
+		#find place in HTML containing player names
+		mvpList = mvpSoup.find_all("td")
+
+		for i in range(0, len(mvpList), 4):
+			year = str(mvpList[i])
+			year = year[4 : 8]
+
+			playerName = str(mvpList[i + 1])
+			playerName = playerName[29 : len(playerName) - 9]
+
+			position = str(mvpList[i + 3])
+			position = position[4 : len(position) - 5]
+
+			#filter out pitchers since we only are comparing hitting stats
+			if position != "SP":
+				mvpDict[year] = playerName
+
+	return mvpDict
+
+
+def generateMVPData():
+	#create an empty csv file to write our stats to
+	datestamp = generateDatestamp()
+	csvFilenameString = "MLBStatScraperMVP_" + datestamp + ".csv"
+	csvFile = open(csvFilenameString, 'w')
+
+	csvHeader = "player name,mvp,ops,avg,rbi,hr"
+	csvFile.write(csvHeader)
+
+	mvpDict = createMVPDict()
+	leagueTuple = ("american", "national")
+
+	for year in mvpDict.keys():
+		for league in leagueTuple:
+			#use request with "User-Agent" header to prevent MLB from blocking bot
+			url = getURL(league, "ops", year)
+			request = Request(url, headers={"User-Agent": "XYZ/3.0"})
+
+			#download webpage, read contents, and close reader
+			downloadedPage = urlopen(request)
+			pageHtml = downloadedPage.read()
+			downloadedPage.close()
+
+			#create Beautiful Soup object to parse html page contents
+			baseballSoup = soup(pageHtml, "html.parser")
+
+			#find place in HTML containing player names, and stats in the table (ordered based on statType)
+			playerNames = baseballSoup.find_all("span", {"class": "full-3fV3c9pF"})
+
+			#loop through list of player name by 2, and parse the html to retrieve a str object for first and last name
+			statIndex = 0; #needed to access stat line
+			nameStartingIndex = 28
+			nameEndingIndex = -7
+
+			#loop through the list of players and create a csv line including rank, name, and stats
+			for i in range(0, len(playerNames), 2):
+				#get first and last name of current player as string
+				firstNameLine = str(playerNames[i])
+				lastNameLine = str(playerNames[i + 1])
+
+				#parse string, leaving only the name and add to the csv line
+				firstName = str(firstNameLine[nameStartingIndex : nameEndingIndex])
+				lastName = str(lastNameLine[nameStartingIndex : nameEndingIndex])
+				playerName = firstName + ' ' + lastName
+				csvLine = playerName + ','
+
+				#check if player is the mvp of that year, and set mvp status accordingly
+				if playerName != mvpDict[year]:
+					csvLine = csvLine + "No" + ','
+				else:
+					csvLine = csvLine + "Yes" + ','
+
+				#add the stats to the csv line for the given stat index
+				csvLine = csvLine + getStatsForIndex(statIndex, baseballSoup)
+
+				statIndex += 1
+				if playerName == mvpDict[year]:
+					print(csvLine)
+				csvFile.write(csvLine)
 
 
 def generateDatestamp():
@@ -446,7 +543,9 @@ currentYearString = str(now.year)
 
 #if there is only one argument, the user is just performing a simple demo of the script
 if len(sys.argv) == 1:
-	getLeaders("mlb", "ops", currentYearString)
+	#uncomment after testing mvp csv generation!!!!!!!!!!!!!!!!
+	#getLeaders("mlb", "ops", currentYearString)
+	generateMVPData()
 #if there are two arguments, the user is running script for all possible combinations of league, stat type,
 #and year, so we must check that they typed "all"
 elif len(sys.argv) == 2:
