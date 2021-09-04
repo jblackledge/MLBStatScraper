@@ -104,7 +104,8 @@ def calculateStatIndeces(statLine):
 
 def createMVPDict():
 	leagueTuple = ("AL", "NL")
-	mvpDict = dict()
+	americanMVPDict = dict()
+	nationalMVPDict = dict()
 
 	for league in leagueTuple:
 		#use request with "User-Agent" header to prevent MLB from blocking bot
@@ -134,9 +135,12 @@ def createMVPDict():
 
 			#filter out pitchers since we only are comparing hitting stats
 			if position != "SP":
-				mvpDict[year] = playerName
+				if league == "NL":
+					nationalMVPDict[year] = playerName
+				else:
+					americanMVPDict[year] = playerName
 
-	return mvpDict
+	return (americanMVPDict, nationalMVPDict)
 
 
 def generateMVPData():
@@ -145,14 +149,23 @@ def generateMVPData():
 	csvFilenameString = "MLBStatScraperMVP_" + datestamp + ".csv"
 	csvFile = open(csvFilenameString, 'w')
 
-	csvHeader = "player name,mvp,ops,avg,rbi,hr"
+	csvHeader = "player name,mvp,ops,avg,rbi,hr" + '\n'
 	csvFile.write(csvHeader)
 
-	mvpDict = createMVPDict()
+	mvpDicts = createMVPDict()
+	americanMVPDict = mvpDicts[0]
+	nationalMVPDict = mvpDicts[1]
+	mvpDict = dict()
 	leagueTuple = ("american", "national")
 
-	for year in mvpDict.keys():
-		for league in leagueTuple:
+	for league in leagueTuple:
+		#set mvpdict to correct league and iterate through the year keys in that dict
+		if league == "national":
+			mvpDict = nationalMVPDict
+		else:
+			mvpDict = americanMVPDict
+
+		for year in mvpDict.keys():
 			#use request with "User-Agent" header to prevent MLB from blocking bot
 			url = getURL(league, "ops", year)
 			request = Request(url, headers={"User-Agent": "XYZ/3.0"})
@@ -185,7 +198,7 @@ def generateMVPData():
 				playerName = firstName + ' ' + lastName
 				csvLine = playerName + ','
 
-				#check if player is the mvp of that year, and set mvp status accordingly
+				#check if player is the mvp of that year, in that league, and set mvp status accordingly
 				if playerName != mvpDict[year]:
 					csvLine = csvLine + "No" + ','
 				else:
@@ -196,7 +209,7 @@ def generateMVPData():
 
 				statIndex += 1
 				if playerName == mvpDict[year]:
-					print(csvLine)
+					print(year + ' ' + league + ' ' + csvLine)
 				csvFile.write(csvLine)
 
 
@@ -546,6 +559,13 @@ if len(sys.argv) == 1:
 	#uncomment after testing mvp csv generation!!!!!!!!!!!!!!!!
 	#getLeaders("mlb", "ops", currentYearString)
 	generateMVPData()
+	#mvpDicts = createMVPDict()
+	#americanMVPDict = mvpDicts[0]
+	#nationalMVPDict = mvpDicts[1]
+	#for year in americanMVPDict.keys():
+		#print(americanMVPDict[year])
+	#for year in nationalMVPDict.keys():
+		#print(nationalMVPDict[year])
 #if there are two arguments, the user is running script for all possible combinations of league, stat type,
 #and year, so we must check that they typed "all"
 elif len(sys.argv) == 2:
