@@ -556,21 +556,14 @@ currentYearString = str(now.year)
 
 #if there is only one argument, the user is just performing a simple demo of the script
 if len(sys.argv) == 1:
-	#uncomment after testing mvp csv generation!!!!!!!!!!!!!!!!
-	#getLeaders("mlb", "ops", currentYearString)
-	generateMVPData()
-	#mvpDicts = createMVPDict()
-	#americanMVPDict = mvpDicts[0]
-	#nationalMVPDict = mvpDicts[1]
-	#for year in americanMVPDict.keys():
-		#print(americanMVPDict[year])
-	#for year in nationalMVPDict.keys():
-		#print(nationalMVPDict[year])
-#if there are two arguments, the user is running script for all possible combinations of league, stat type,
-#and year, so we must check that they typed "all"
+	getLeaders("mlb", "ops", currentYearString)
+#if there are two arguments, the user is either running script for all possible combinations of league, 
+#stat-type, and year, OR they are generating an mvp csv file, so we must check which one they typed
 elif len(sys.argv) == 2:
 	if sys.argv[1] == "all":
 		testAll()
+	elif sys.argv[1] == "mvp":
+		generateMVPData()
 	else:
 		print("Error: invalid input")
 #if there are three arguments, the user is inputting a custom year span to run all leagues and stat types
