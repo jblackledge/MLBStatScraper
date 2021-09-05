@@ -23,7 +23,6 @@ def getLeaders(league, statType, year):
 	playerNames = baseballSoup.find_all("span", {"class": "full-3fV3c9pF"})
 
 	#loop through list of player name by 2, and parse the html to retrieve a str object for first and last name
-	rank = 1;
 	statIndex = 0; #needed to access stat line
 	nameStartingIndex = 28
 	nameEndingIndex = -7
@@ -33,9 +32,11 @@ def getLeaders(league, statType, year):
 	csvFilenameString = "MLBStatScraper_" + datestamp + '_' + league + '_' + statType + '_' + year + ".csv"
 	csvFile = open(csvFilenameString, 'w')
 
+	csvHeader = "player name,ops,avg,rbi,hr" + '\n'
+	csvFile.write(csvHeader)
+
 	#loop through the list of players and create a csv line including rank, name, and stats
 	for i in range(0, len(playerNames), 2):
-		csvLine = str(rank) + ','
 
 		#get first and last name of current player as string
 		firstNameLine = str(playerNames[i])
@@ -44,12 +45,12 @@ def getLeaders(league, statType, year):
 		#parse string, leaving only the name and add to the csv line
 		firstName = str(firstNameLine[nameStartingIndex : nameEndingIndex])
 		lastName = str(lastNameLine[nameStartingIndex : nameEndingIndex])
-		csvLine = csvLine + firstName + ' ' + lastName + ','
+		playerName = firstName + ' ' + lastName
+		csvLine = playerName + ','
 
 		#add the stats to the csv line for the given stat index
 		csvLine = csvLine + getStatsForIndex(statIndex, baseballSoup)
 
-		rank += 1
 		statIndex += 1
 		csvFile.write(csvLine)
 
