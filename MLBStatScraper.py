@@ -144,10 +144,14 @@ def createMVPDict():
 	return (americanMVPDict, nationalMVPDict)
 
 
-def generateMVPData():
+def generateMVPData(isBinary):
 	#create an empty csv file to write our stats to
 	datestamp = generateDatestamp()
-	csvFilenameString = "MLBStatScraperMVP_" + datestamp + ".csv"
+
+	if not isBinary:
+		csvFilenameString = "MLBStatScraperMVP_" + datestamp + "_string"  + ".csv"
+	else:
+		csvFilenameString = "MLBStatScraperMVP_" + datestamp + "_binary" + ".csv"
 	csvFile = open(csvFilenameString, 'w')
 
 	csvHeader = "player name,mvp,ops,avg,rbi,hr" + '\n'
@@ -201,9 +205,17 @@ def generateMVPData():
 
 				#check if player is the mvp of that year, in that league, and set mvp status accordingly
 				if playerName != mvpDict[year]:
-					csvLine = csvLine + "No" + ','
+					#determine if the user needs binary values of 1 or 0, if not we use yes/no
+					if not isBinary:
+						csvLine = csvLine + "No" + ','
+					else:
+						csvLine = csvLine + '0' + ','
 				else:
-					csvLine = csvLine + "Yes" + ','
+					#determine if the user needs binary values of 1 or 0, if not we use yes/no
+					if not isBinary:
+						csvLine = csvLine + "Yes" + ','
+					else:
+						csvLine = csvLine + '1' + ','
 
 				#add the stats to the csv line for the given stat index
 				csvLine = csvLine + getStatsForIndex(statIndex, baseballSoup)
@@ -564,12 +576,14 @@ elif len(sys.argv) == 2:
 	if sys.argv[1] == "all":
 		testAll()
 	elif sys.argv[1] == "mvp":
-		generateMVPData()
+		generateMVPData(False)
 	else:
 		print("Error: invalid input")
 #if there are three arguments, the user is inputting a custom year span to run all leagues and stat types
 elif len(sys.argv) == 3:
-	if isValidYear(int(sys.argv[1])) and isValidYear(int(sys.argv[2])) and isValidYearOrder(int(sys.argv[1]), int(sys.argv[2])):
+	if sys.argv[1] == "mvp" and sys.argv[2] == "binary":
+		generateMVPData(True)
+	elif isValidYear(int(sys.argv[1])) and isValidYear(int(sys.argv[2])) and isValidYearOrder(int(sys.argv[1]), int(sys.argv[2])):
 		runAllCustomYearSpan(int(sys.argv[1]), int(sys.argv[2]))
 	else:
 		print("Error: invalid input")
