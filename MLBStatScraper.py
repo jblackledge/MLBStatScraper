@@ -144,19 +144,22 @@ def createMVPDict():
 	return (americanMVPDict, nationalMVPDict)
 
 
-def generateMVPData(isBinary):
+def generateMVPData(isBinary, isBinaryFL):
 	#create an empty csv file to write our stats to
 	datestamp = generateDatestamp()
 
-	if not isBinary:
-		csvFilenameString = "MLBStatScraperMVP_" + datestamp + "_string"  + ".csv"
-	else:
+	if isBinary:
 		csvFilenameString = "MLBStatScraperMVP_" + datestamp + "_binary" + ".csv"
+	elif isBinaryFL:
+		csvFilenameString = "MLBStatScraperMVP_" + datestamp + "_binaryFL"  + ".csv"
+	else:
+		csvFilenameString = "MLBStatScraperMVP_" + datestamp + "_string"  + ".csv"
 	csvFile = open(csvFilenameString, 'w')
 
 	csvHeader = "player name,mvp,ops,avg,rbi,hr" + '\n'
 	csvFile.write(csvHeader)
 
+	#create the mvp dictionaries to iterate through
 	mvpDicts = createMVPDict()
 	americanMVPDict = mvpDicts[0]
 	nationalMVPDict = mvpDicts[1]
@@ -206,16 +209,20 @@ def generateMVPData(isBinary):
 				#check if player is the mvp of that year, in that league, and set mvp status accordingly
 				if playerName != mvpDict[year]:
 					#determine if the user needs binary values of 1 or 0, if not we use yes/no
-					if not isBinary:
-						csvLine = csvLine + "Not MVP" + ','
-					else:
+					if isBinary:
 						csvLine = csvLine + '0' + ','
+					elif isBinaryFL:
+						csvLine = csvLine + "0.0" + ','
+					else:
+						csvLine = csvLine + "Not MVP" + ','
 				else:
 					#determine if the user needs binary values of 1 or 0, if not we use yes/no
-					if not isBinary:
-						csvLine = csvLine + "MVP" + ','
-					else:
+					if isBinary:
 						csvLine = csvLine + '1' + ','
+					elif isBinaryFL:
+						csvLine = csvLine + "1.0" + ','
+					else:
+						csvLine = csvLine + "MVP" + ','
 
 				#add the stats to the csv line for the given stat index
 				csvLine = csvLine + getStatsForIndex(statIndex, baseballSoup)
@@ -579,10 +586,13 @@ elif len(sys.argv) == 2:
 		generateMVPData(False)
 	else:
 		print("Error: invalid input")
-#if there are three arguments, the user is inputting a custom year span to run all leagues and stat types
+#if there are three arguments, the user is inputting a custom year span to run all leagues and stat types OR
+#is gnerating mvp data in with a binary(1/0) or binary float(1.0/0.0) mvp columnt
 elif len(sys.argv) == 3:
 	if sys.argv[1] == "mvp" and sys.argv[2] == "binary":
-		generateMVPData(True)
+		generateMVPData(True, False)
+	elif sys.argv[1] == "mvp" and sys.argv[2] == "binaryfl":
+		generateMVPData(False, True)
 	elif isValidYear(int(sys.argv[1])) and isValidYear(int(sys.argv[2])) and isValidYearOrder(int(sys.argv[1]), int(sys.argv[2])):
 		runAllCustomYearSpan(int(sys.argv[1]), int(sys.argv[2]))
 	else:
