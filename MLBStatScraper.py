@@ -207,13 +207,13 @@ def generateMVPData(isBinary):
 				if playerName != mvpDict[year]:
 					#determine if the user needs binary values of 1 or 0, if not we use yes/no
 					if not isBinary:
-						csvLine = csvLine + "No" + ','
+						csvLine = csvLine + "Not MVP" + ','
 					else:
 						csvLine = csvLine + '0' + ','
 				else:
 					#determine if the user needs binary values of 1 or 0, if not we use yes/no
 					if not isBinary:
-						csvLine = csvLine + "Yes" + ','
+						csvLine = csvLine + "MVP" + ','
 					else:
 						csvLine = csvLine + '1' + ','
 
