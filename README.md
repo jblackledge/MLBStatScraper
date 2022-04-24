@@ -7,7 +7,7 @@ Simply download the code from this repo. This script works on all systems with a
 
 ## Usage
 ### Quick Start
-Once downloaded, use the terminal to cd into the folder you downloaded it to. There type "make all" to run the included demo that will create a csv file of all MLB leaders in the current year, sorted by OPS. You can also explicitly choose which league, stat-type and year by typing "python3 MLBStatScraper.py "league-name" "stat-type" "year"", where league-name is one of "national", "american", or "mlb" and stat-type is "ops", "avg", "rbi", or "hr".
+Once downloaded, use the terminal to cd into the folder you downloaded it to. There type "make all" to run the included demo that will create a csv file of all MLB leaders in the current year, sorted by OPS. You can also explicitly choose which league, stat-type and year by typing "python3 MLBStatScraper.py "league-name" "stat-type" "year"", where league-name is one of "national", "american", or "mlb" and stat-type is "ops", "avg", "rbi", or "hr". Specifying a stat type sorts the data based on the leader of the specified stat category.
 
 ### Large Data Sets
 One may also decide they need to download many years of csv data all in one go, there are two ways to accomplish this. If you need data from all three leagues in a custom year span, type "python3 MLBStatScraper.py "beginning-year" "ending-year"". Where "beginning-year" and "ending-year" are any year greater than or equal to 1903, less than or equal to the current year, and "ending-year" is greater than "beginning-year". 
